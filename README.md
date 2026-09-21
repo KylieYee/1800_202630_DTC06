@@ -66,8 +66,11 @@ elmo-hikes/
 
 
 ## Contributors
-- **Nikki** - BCIT CST Student with a passion for dogs and reading. Fun fact: I buy my dogs treats and toys daily.
-- **Teammate Name** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
+
+
+- **Samson Joseph** - BCIT CST student with a passion for finance and flying planes. I am mostly into combat flight simulators like DCS.
+- - **Nikki** - BCIT CST Student with a passion for dogs and reading. Fun fact: I buy my dogs treats and toys daily.
+
 
 ---
 
