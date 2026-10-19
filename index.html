@@ -1,60 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <title>My BCIT Project</title>
-    <meta name="comp1800 template" content="My 1800 App">
+    <meta name="comp1800 template" content="My 1800 App" />
 
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Version 1</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <!-- Other libraries go here -->
+  </head>
 
-</head>
-
-<body class="">
-    
-    <!-- navigation bar -->
-    <header class="space-y-2 p-2 text-white bg-no-repeat bg-center bg-cover" style="background-color: grey;">
-        <nav class="flex items-center justify-center">
-            <a href="index.html" class="flex items-center gap-1">
-                <img class="h-12 w-12 rounded-full object-cover border-2 border-white"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTZZrRqTCtuxp8DE4qTXfGporgJrpz1On3Dmg-eOlG7w&s=10"
-                    alt="Moon logo" />
-                 </a>
-            <div>
-                 <a href="/Users/admin/Documents/webapp/1800_202630_DTC06/index.html" class="p-2">Home</a>
-                <a href="/Users/admin/Documents/webapp/1800_202630_DTC06/Event.html" class="p-2">Event</a>
-                <a href="/Users/admin/Documents/webapp/1800_202630_DTC06/tracker.html" class="p-2">Tracker</a>
-                <a href="/Users/admin/Documents/webapp/1800_202630_DTC06/reminder.html" class="p-2">Reminder</a>
-                <a href="/Users/admin/Documents/webapp/1800_202630_DTC06/profile.html" class="p-2">Profile</a>
-            </div>
-        </nav>
-        
-    
+  <body class="">
+    <!-- navigation bar start -->
+    <header
+      class="space-y-2 p-2"
+      style="background-color: grey;"
+    >
+      <nav class="flex items-center justify-center">
+        <a href="index.html" class="flex items-center gap-1">
+          <img
+            class="h-12 w-12 rounded-full object-cover border-2 border-white"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTZZrRqTCtuxp8DE4qTXfGporgJrpz1On3Dmg-eOlG7w&s=10"
+            alt="Moon logo"
+          />
+        </a>
+        <div>
+          <a
+            href="/Users/admin/Documents/webapp/1800_202630_DTC06/index.html"
+            class="p-2"
+            style="color: white; text-decoration: none;"
+            >Home</a
+          >
+          <a
+            href="/Users/admin/Documents/webapp/1800_202630_DTC06/Event.html"
+            class="p-2"
+            style="color: white; text-decoration: none;"
+            >Event</a
+          >
+          <a
+            href="/Users/admin/Documents/webapp/1800_202630_DTC06/tracker.html"
+            class="p-2"
+            style="color: white; text-decoration: none;"
+            >Tracker</a
+          >
+          <a
+            href="/Users/admin/Documents/webapp/1800_202630_DTC06/reminder.html"
+            class="p-2"
+            style="color: white; text-decoration: none;"
+            >Reminder</a
+          >
+          <a
+            href="/Users/admin/Documents/webapp/1800_202630_DTC06/profile.html"
+            class="p-2"
+            style="color: white; text-decoration: none;"
+            >Profile</a
+          >
+        </div>
+      </nav>
+      <!--Navigation bar end-->
     </header>
 
-    
     <!------------------------------>
     <!-- Your HTML Layout go here -->
-     <main >
-        
-     </main>
-     
+    <main>
+        <!--Hero start-->
+      <div class="px-5 py-3 mb-4 bg-body-tertiary rounded-3">
+        <div
+          class="container-fluid py-5"
+          style="
+            background-image: url(./images/nature.jpg);
+            background-size: cover;
+          "
+        >
+          <h1 class="display-5 fw-bold" style="color: white">
+            Welcome to the Health Tracking App!
+          </h1>
+          <p class="col-md-8 fs-4" style="color: white">
+            Track your health, upcoming events, reminders, tasks and more!
+          </p>
+          <!--Call to action start-->
+          <button class="btn btn-secondary btn-lg" type="button">
+            Get Started
+          </button>
+          <!--Call to action end-->
+        </div>
+      </div>
+      <!--Hero end-->
+    </main>
+
     <!------------------------------>
     <!-- Stuff for body goes here -->
-
 
     <!---------------------------------------------->
     <!-- Your own JavaScript functions go here    -->
     <!---------------------------------------------->
 
     <!-- Link to scripts of your own -->
-    <!-- <script type="module" src="./src/main.js"></script> -->
-
-</body>
-
+    <!--<script type="module" src="./src/main.js"></script>-->
+    <script type="module" src="main.js"></script>
+  </body>
 </html>
