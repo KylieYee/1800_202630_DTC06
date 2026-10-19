@@ -4,46 +4,60 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>My BCIT Project</title>
-
-    <link href="https://jsdelivr.net" rel="stylesheet" />
   </head>
   <body class="">
-    <!-- navigation bar -->
-    <header
-      class="space-y-2 p-2 text-white bg-no-repeat bg-center bg-cover"
-      style="
-        background-color: grey;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
-      "
-    >
-      <nav class="d-flex align-items-center justify-content-center">
+    <!-- navigation bar start -->
+    <header class="space-y-2 p-2" style="background-color: grey">
+      <nav class="text-center">
         <a href="/index.html" class="flex items-center gap-1">
           <img
-            class="rounded-circle border border-2 border-white"
-            style="width: 3rem; height: 3rem; object-fit: cover;"
+            class="rounded-circle object-fit-cover border border-2 border-white"
+            style="width: 3rem; height: 3rem"
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTZZrRqTCtuxp8DE4qTXfGporgJrpz1On3Dmg-eOlG7w&s=10"
             alt="Moon logo"
           />
         </a>
-        <div>
-          <a href="/index.html" class="p-2">Home</a>
-          <a href="/Event.html" class="p-2">Event</a>
-          <a href="/tracker.html" class="p-2">Tracker</a>
-          <a href="/reminder.html" class="p-2">Reminder</a>
-          <a href="/profile.html" class="p-2">Profile</a>
-        </div>
+        <a
+          href="/index.html"
+          class="p-2"
+          style="color: white; text-decoration: none"
+          >Home</a
+        >
+        <a
+          href="/Event.html"
+          class="p-2"
+          style="color: white; text-decoration: none"
+          >Event</a
+        >
+        <a
+          href="/tracker.html"
+          class="p-2"
+          style="color: white; text-decoration: none"
+          >Tracker</a
+        >
+        <a
+          href="/reminder.html"
+          class="p-2"
+          style="color: white; text-decoration: none"
+          >Reminder</a
+        >
+        <a
+          href="/profile.html"
+          class="p-2"
+          style="color: white; text-decoration: none"
+          >Profile</a
+        >
       </nav>
+      <!--Navigation bar end-->
     </header>
+
     <main>
-      <div class="d-flex gap-2">
+      <div class="d-flex align-items-center justify-content-center gap-2">
         <h1 class="p-3">Reminder</h1>
-        <button class="p-3">+</button>
-        <div></div>
-        <h3>Upcoming</h3>
+        <button class="p-3" onclick="window.location.href='createReminder.html'">+</button>
       </div>
+      <h3 class="d-flex align-items-center justify-content-center gap-2">Upcoming</h3>
     </main>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>
