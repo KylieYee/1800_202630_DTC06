@@ -22,28 +22,31 @@
           placeholder="Enter Title"
         />
       </div>
-      <div
-        class="d-flex align-items-center justify-content-center gap-2 p-2"
-        style="background-color: grey"
-      >
-        <label for="date-select">Set date:</label>
-        <input type="date" id="date-select" name="date-select" />
-        <label for="time-select">Set time:</label>
-        <input type="time" id="time-select" />
-        <label for="reminder-frequency">Repeat:</label>
-        <select id="reminder-frequency" name="frequency">
-          <option value="never">Never</option>
-          <option value="once">Hourly</option>
-          <option value="daily">Daily</option>
-          <option value="weekly" selected>Weekly</option>
-          <option value="monthly">Monthly</option>
-          <option value="yearly">Yearly</option>
-        </select>
-      </div>
-      <div class="d-flex align-items-center justify-content-center gap-2 p-2">
-        <textarea style="width: 40%" placeholder="Enter details"></textarea>
-      </div>
+      <form id="reminderForm">
+        <div
+          class="d-flex align-items-center justify-content-center gap-2 p-2"
+          style="background-color: grey"
+        >
+          <label for="date-select">Set date:</label>
+          <input type="date" id="date-select" name="date-select" />
+          <label for="time-select">Set time:</label>
+          <input type="time" id="time-select" />
+          <label for="reminder-frequency">Repeat:</label>
+          <select id="reminder-frequency" name="frequency">
+            <option value="never">Never</option>
+            <option value="once">Hourly</option>
+            <option value="daily">Daily</option>
+            <option value="weekly" selected>Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+        <div class="d-flex align-items-center justify-content-center gap-2 p-2">
+          <textarea style="width: 40%" placeholder="Enter details"></textarea>
+        </div>
+      </form>
     </main>
+    <script type="module" src="/src/createReminder.js"></script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
