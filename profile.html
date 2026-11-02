@@ -41,7 +41,7 @@
                 <!-- Navigation links -->
                 <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
                     <div class="navbar-nav text-center">
-                        <a href="index.html" class="nav-link px-3 text-white">Home</a>
+                        <a href="main.html" class="nav-link px-3 text-white">Home</a>
                         <a href="Event.html" class="nav-link px-3 text-white">Event</a>
                         <a href="tracker.html" class="nav-link px-3 text-white">Tracker</a>
                         <a href="reminder.html" class="nav-link px-3 text-white">Reminder</a>
@@ -55,8 +55,47 @@
     </header>
 
     <main>
+        <div id="profile-container">
+            <h1 class="p-5">Welcome User</h1>
+            <div class="d-flex flex-row align-items-center">
+                <img src="images/blank-profile-picture-973460_1280.png" class=" rounded-circle w-25 p-5">
+                
+                <div class="d-flex flex-column  ">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default"> Full Name </span>
+                        <input type="text" class="form-control" aria-label="Sizing example input"
+                            aria-describedby="inputGroup-sizing-default">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Age</span>
+                        <input type="text" class="form-control" aria-label="Sizing example input"
+                            aria-describedby="inputGroup-sizing-default">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Height</span>
+                        <input type="text" class="form-control" aria-label="Sizing example input"
+                            aria-describedby="inputGroup-sizing-default">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Height</span>
+                        <input type="text" class="form-control" aria-label="Sizing example input"
+                            aria-describedby="inputGroup-sizing-default">
+                    </div>
+
+                    <button type="button" class="btn btn-danger">Log Out </button>
+ 
+                </div>
+            </div>
+            
+
+        </div>
+
 
     </main>
+    <script type="module" src="src/profile.js"></script>
     
 </body>
 </html>

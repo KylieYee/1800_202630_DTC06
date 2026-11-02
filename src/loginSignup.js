@@ -85,7 +85,7 @@ function initAuthUI() {
     setSubmitDisabled(loginForm, true);
     try {
       await loginUser(email, password);
-      location.href = redirectUrl;
+      location.href = "main.html";
     } catch (err) {
       showError(authErrorMessage(err));
       console.error(err);
