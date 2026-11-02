@@ -7,17 +7,11 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "bootstrap": "^5.3.8",
-    "firebase": "^13.1.0"
-  },
   "devDependencies": {
     "vite": "^7.0.0"
   },
-  "allowScripts": {
-    "@firebase/util@1.15.3": true,
-    "esbuild@0.28.2": true,
-    "fsevents@2.3.3": true,
-    "protobufjs@7.6.6": true
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "firebase": "^13.0.0"
   }
 }
