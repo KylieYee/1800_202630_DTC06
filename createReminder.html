@@ -9,20 +9,22 @@
   <body class="">
     <main>
       <br />
-      <div class="d-flex align-items-center justify-content-center gap-2 p-2">
-        <button
-          style="width: 5%"
-          onclick="window.location.href = 'reminder.html'"
-        >
-          &lt;
-        </button>
-        <input
-          class="border p-2 rounded"
-          style="width: 35%"
-          placeholder="Enter Title"
-        />
-      </div>
       <form id="reminderForm">
+        <div class="d-flex align-items-center justify-content-center gap-2 p-2">
+          <button
+            style="width: 5%"
+            onclick="window.location.href = 'reminder.html'"
+          >
+            &lt;
+          </button>
+          <input
+            class="border p-2 rounded"
+            style="width: 35%"
+            id="reminder-title"
+            placeholder="Enter Title"
+            required
+          />
+        </div>
         <div
           class="d-flex align-items-center justify-content-center gap-2 p-2"
           style="background-color: grey"
@@ -33,16 +35,24 @@
           <input type="time" id="time-select" />
           <label for="reminder-frequency">Repeat:</label>
           <select id="reminder-frequency" name="frequency">
-            <option value="never">Never</option>
+            <option value="never" selected>Never</option>
             <option value="once">Hourly</option>
             <option value="daily">Daily</option>
-            <option value="weekly" selected>Weekly</option>
+            <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
             <option value="yearly">Yearly</option>
           </select>
         </div>
-        <div class="d-flex align-items-center justify-content-center gap-2 p-2">
-          <textarea style="width: 40%" placeholder="Enter details"></textarea>
+        <div
+          class="d-flex flex-column align-items-center justify-content-center gap-2 p-2"
+        >
+          <textarea
+            style="width: 40%"
+            id="reminder-details"
+            placeholder="Enter details"
+            required
+          ></textarea>
+          <button type="submit">Create Reminder</button>
         </div>
       </form>
     </main>
