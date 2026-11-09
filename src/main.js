@@ -6,6 +6,7 @@ import { db } from "./firebaseConfig.js";
 import { doc, onSnapshot } from "firebase/firestore";
 import {
   collection,
+  getDoc,
   getDocs,
   addDoc,
   serverTimestamp,
@@ -18,7 +19,7 @@ function showName() {
     if (user) {
       // User is logged in
       const name = user.displayName || user.email; // Use email if name is missing
-      document.getElementById("name-goes-here").textContent =" " + name;
+      document.getElementById("name-goes-here").textContent = " " + name;
     } else {
       // User is NOT logged in
       location.href = "index.html"; // Redirect to login page
@@ -26,4 +27,16 @@ function showName() {
   });
 }
 
-showName()
+showName();
+
+
+onAuthReady(async function (user) {
+  if (!user) {
+    location.href = "index.html"; // Not logged in → back to start
+  } else {
+    currentUser = user; // 1. Remember who's logged in
+    const userDoc = await getDoc(doc(db, "users", user.uid)); // 2. Get their user doc
+
+    displayReminders();
+  }
+});
