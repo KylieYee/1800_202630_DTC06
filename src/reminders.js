@@ -2,6 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthReady } from "/src/authentication.js";
 import { db } from "./firebaseConfig.js";
 import { doc, onSnapshot } from "firebase/firestore";
 import {
@@ -11,6 +12,10 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
+import { setDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+
+let currentUser = null;
+let favorites = [];
 
 // Displays reminders
 const displayReminders = async (user) => {
@@ -55,6 +60,8 @@ const displayReminders = async (user) => {
       newcard.querySelector(".read-more").href =
         `eachReminder.html?docID=${encodeURIComponent(doc.id)}`;
 
+      setupCheckbox(newcard, doc.id);
+
       // Displays the reminder
       container.appendChild(newcard);
     });
@@ -70,11 +77,73 @@ const displayReminders = async (user) => {
 // Checks if user is logged in
 const auth = getAuth();
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (user) {
+    currentUser = user;
+    const userDoc = await getDoc(doc(db, "Reminders", currentUser.uid)); // 2. Get their user doc
+    favorites = userDoc.data()?.favorites || []; // uses "optional chaining" (?.)
     displayReminders(user);
   } else {
     document.getElementById("reminders-go-here").textContent =
       "Please log in to view your reminders.";
   }
 });
+
+// ------------------------------------------------------------
+// setupHeart(card, hikeID)
+// Gets ONE card's heart ready:
+//   - on page load: fills the heart if this hike is already a favourite
+//   - connects the click to toggleFavourite()
+// card   = the card we just built from the template
+// hikeID = this hike's document ID (doc.id)
+// ------------------------------------------------------------
+function setupCheckbox(card, reminderId) {
+  const checkbox = card.querySelector(".check-btn");
+  
+  if (!checkbox) {
+    console.error("Checkbox not found");
+    return;
+  }
+
+  // Checks whether reminder is already completed
+  if (favorites.includes(reminderId)) {
+    checkbox.classList.replace("bi-square", "bi-check-square");
+  }
+
+  // Connects checkbox to toggle function
+  checkbox.addEventListener("click", function () {
+    toggleCheckbox(checkbox, reminderId);
+  });
+}
+
+// ------------------------------------------------------------
+// toggleFavourite(heart, hikeID)
+// Runs on every click: adds or removes the hike from favourites
+// heart  = the heart icon that was clicked
+// hikeID = which hike it belongs to
+// ------------------------------------------------------------
+async function toggleCheckbox(checkbox, reminderId) {
+  const userRef = doc(db, "Reminders", currentUser.uid);
+
+  if (checkbox.classList.contains("bi-check-square")) {
+    // Remove from completed reminders
+    await setDoc(
+      userRef,
+      { favorites: arrayRemove(reminderId) },
+      { merge: true },
+    );
+
+    checkbox.classList.replace("bi-check-square", "bi-square");
+    favorites.splice(favorites.indexOf(reminderId), 1);
+  } else {
+    // Add to completed reminders
+    await setDoc(
+      userRef,
+      { favorites: arrayUnion(reminderId) },
+      { merge: true },
+    );
+
+    checkbox.classList.replace("bi-square", "bi-check-square");
+    favorites.push(reminderId);
+  }
+}
