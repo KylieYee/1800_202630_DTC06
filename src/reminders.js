@@ -15,7 +15,7 @@ import {
 import { setDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 let currentUser = null;
-let favorites = [];
+let checked = [];
 
 // Displays reminders
 const displayReminders = async (user) => {
@@ -37,7 +37,12 @@ const displayReminders = async (user) => {
 
     // Connects to HTML
     const container = document.getElementById("reminders-go-here");
+    const completedContainer = document.getElementById("completed-reminders");
+
     const template = document.getElementById("reminderCardTemplate");
+    const completedTemplate = document.getElementById(
+      "completedReminderCardTemplate",
+    );
 
     // Clears previous reminders
     container.innerHTML = "";
@@ -45,30 +50,51 @@ const displayReminders = async (user) => {
     // Goes through each reminder
     remindersSnap.forEach((doc) => {
       const reminder = doc.data();
+      const reminderId = doc.id;
 
-      // Copies the template
+      if (checked.includes(reminderId)) {
+        return;
+      }
+
       let newcard = template.content.cloneNode(true);
 
-      // Gets reminder information
       newcard.querySelector(".card-title").textContent = reminder.title;
       newcard.querySelector(".card-date").textContent = reminder.date;
       newcard.querySelector(".card-time").textContent = reminder.time;
       newcard.querySelector(".card-frequency").textContent = reminder.frequency;
       newcard.querySelector(".card-details").textContent = reminder.details;
 
-      // Links to individual reminder page
       newcard.querySelector(".read-more").href =
-        `eachReminder.html?docID=${encodeURIComponent(doc.id)}`;
+        `createReminder.html?docID=${encodeURIComponent(doc.id)}`;
 
       setupCheckbox(newcard, doc.id);
 
-      // Displays the reminder
       container.appendChild(newcard);
     });
 
-    if (remindersSnap.empty) {
-      container.textContent = "You have no reminders yet.";
-    }
+    //for the checkmarked reminders
+    checked.forEach((checkedId) => {
+      const doc = remindersSnap.docs.find((doc) => doc.id === checkedId);
+
+      if (!doc) return;
+
+      const reminder = doc.data();
+
+      let newcard = completedTemplate.content.cloneNode(true);
+
+      newcard.querySelector(".card-title").textContent = reminder.title;
+      newcard.querySelector(".card-date").textContent = reminder.date;
+      newcard.querySelector(".card-time").textContent = reminder.time;
+      newcard.querySelector(".card-frequency").textContent = reminder.frequency;
+      newcard.querySelector(".card-details").textContent = reminder.details;
+
+      newcard.querySelector(".read-more").href =
+        `createReminder.html?docID=${encodeURIComponent(doc.id)}`;
+
+      setupCheckbox(newcard, doc.id);
+
+      completedContainer.appendChild(newcard);
+    });
   } catch (error) {
     console.error("Error loading reminders:", error);
   }
@@ -81,7 +107,7 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUser = user;
     const userDoc = await getDoc(doc(db, "Reminders", currentUser.uid)); // 2. Get their user doc
-    favorites = userDoc.data()?.favorites || []; // uses "optional chaining" (?.)
+    checked = userDoc.data()?.checked || []; // uses "optional chaining" (?.)
     displayReminders(user);
   } else {
     document.getElementById("reminders-go-here").textContent =
@@ -99,14 +125,14 @@ onAuthStateChanged(auth, async (user) => {
 // ------------------------------------------------------------
 function setupCheckbox(card, reminderId) {
   const checkbox = card.querySelector(".check-btn");
-  
+
   if (!checkbox) {
     console.error("Checkbox not found");
     return;
   }
 
   // Checks whether reminder is already completed
-  if (favorites.includes(reminderId)) {
+  if (checked.includes(reminderId)) {
     checkbox.classList.replace("bi-square", "bi-check-square");
   }
 
@@ -123,27 +149,31 @@ function setupCheckbox(card, reminderId) {
 // hikeID = which hike it belongs to
 // ------------------------------------------------------------
 async function toggleCheckbox(checkbox, reminderId) {
+  const container = document.getElementById("reminders-go-here");
+  const completedContainer = document.getElementById("completed-reminders");
   const userRef = doc(db, "Reminders", currentUser.uid);
+
+  const reminderCard = checkbox.closest(".col-12");
+
 
   if (checkbox.classList.contains("bi-check-square")) {
     // Remove from completed reminders
     await setDoc(
       userRef,
-      { favorites: arrayRemove(reminderId) },
+      { checked: arrayRemove(reminderId) },
       { merge: true },
     );
 
     checkbox.classList.replace("bi-check-square", "bi-square");
-    favorites.splice(favorites.indexOf(reminderId), 1);
+    checked.splice(checked.indexOf(reminderId), 1);
+
+    container.appendChild(reminderCard);
   } else {
     // Add to completed reminders
-    await setDoc(
-      userRef,
-      { favorites: arrayUnion(reminderId) },
-      { merge: true },
-    );
+    await setDoc(userRef, { checked: arrayUnion(reminderId) }, { merge: true });
 
     checkbox.classList.replace("bi-square", "bi-check-square");
-    favorites.push(reminderId);
+    checked.push(reminderId);
+    completedContainer.appendChild(reminderCard);
   }
 }
