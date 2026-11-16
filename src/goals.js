@@ -3,7 +3,9 @@ import { onAuthReady } from "./authentication.js";
 
 import {
     collection,
-    getDocs
+    doc,
+    getDocs,
+    updateDoc
 } from "firebase/firestore";
 
 // Check authentication
@@ -49,9 +51,9 @@ async function loadGoals(user) {
         goalsList.replaceChildren();
 
         // Display each goal
-        snapshot.forEach(function (doc) {
+        snapshot.forEach(function (goalDoc) {
 
-            const goal = doc.data();
+            const goal = goalDoc.data();
 
             // Create a Bootstrap column
             const column = document.createElement("div");
@@ -64,10 +66,51 @@ async function loadGoals(user) {
             const cardBody = document.createElement("div");
             cardBody.className = "card-body";
 
+            const titleRow = document.createElement("div");
+            titleRow.className = "d-flex justify-content-between align-items-start";
+
             // Goal title
             const title = document.createElement("h5");
             title.className = "card-title";
             title.textContent = goal.title;
+
+
+            // Adds check label 
+            const completedLabel = document.createElement("label");
+            completedLabel.className = "form-check";
+
+            const completedCheckbox = document.createElement("input");
+            completedCheckbox.type = "checkbox";
+            completedCheckbox.className = "form-check-input";
+
+
+            // Goals without a saved completion state start unchecked.
+            completedCheckbox.checked = goal.completed === true;
+            completedCheckbox.setAttribute("aria-label", `Mark ${goal.title} as complete`);
+            
+
+            // Save the completion state; revert the checkbox if saving fails.
+            completedCheckbox.addEventListener("change", async function () {
+                const isCompleted = completedCheckbox.checked;
+                completedCheckbox.disabled = true;
+
+                try {
+                    await updateDoc(
+                        doc(db, "users", user.uid, "goals", goalDoc.id),
+                        { completed: isCompleted }
+                    );
+                } catch (error) {
+                    console.error("Error updating goal completion:", error);
+                    completedCheckbox.checked = !isCompleted;
+                    alert("Could not update your goal.");
+                } finally {
+                    completedCheckbox.disabled = false;
+                }
+            });
+
+            completedLabel.appendChild(completedCheckbox);
+            titleRow.appendChild(title);
+            titleRow.appendChild(completedLabel);
 
             // Goal description
             const description = document.createElement("p");
@@ -75,7 +118,7 @@ async function loadGoals(user) {
             description.textContent = goal.description;
 
             // Add elements together
-            cardBody.appendChild(title);
+            cardBody.appendChild(titleRow);
             cardBody.appendChild(description);
 
             card.appendChild(cardBody);
