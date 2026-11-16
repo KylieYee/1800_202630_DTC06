@@ -12,7 +12,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-function showName() {
+function showName(nameElement) {
   // Pass a CALLBACK function to run when Firebase finishes checking login status
   onAuthReady(function (user) {
     // Firebase passes the user object (or null)
