@@ -34,6 +34,7 @@ async function saveGoal(event) {
     const newGoal = {
         title: document.getElementById("goal-title").value.trim(),
         description: document.getElementById("goal-description").value.trim(),
+        completed: false,
         createdAt: serverTimestamp()
     };
 

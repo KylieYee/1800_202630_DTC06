@@ -47,19 +47,36 @@
         </nav>
     </header>
     <!-- Navigation bar end -->
-    <main>
-        
-        <div class="card mt-5">
+    <main class="container py-4">
+        <div class="card mt-4 mx-auto" style="max-width: 640px;">
             <div class="card-header">
-                Calendar Feature
+                Add an event
             </div>
-            <label for="datepickerIconStart" class="form-label">Select date</label>
-            <input type="date" class="form-control" id="datepickerIconStart" name="date">
+            <div class="card-body">
+                <form id="event-form">
+                    <div class="mb-3">
+                        <label for="event-title" class="form-label">Event name</label>
+                        <input type="text" class="form-control" id="event-title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="event-date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="event-date" name="date" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Event</button>
+                </form>
+                <p id="event-message" class="mt-3 mb-0" role="status"></p>
+            </div>
         </div>
-        
+
+        <section class="mt-5">
+            <h2 class="h4 mb-3">Saved events</h2>
+            <div id="events-list" class="row g-3">
+                <p>Loading your events...</p>
+            </div>
+        </section>
     </main>
 
-
+    <script type="module" src="/src/add-event.js"></script>
 </body>
 
 </html>
