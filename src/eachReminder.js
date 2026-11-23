@@ -1,6 +1,6 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db } from "./firebaseConfig.js";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 
 // Declare variable: the hike ID from the URL (eachHike.html?docID=abc123)
 const params = new URL(window.location.href).searchParams;

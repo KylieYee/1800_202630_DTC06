@@ -11,6 +11,7 @@ import {
   getDocs,
   addDoc,
   serverTimestamp,
+  deleteDoc
 } from "firebase/firestore";
 import { setDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
@@ -22,13 +23,7 @@ const displayReminders = async (user) => {
   try {
     // Gets reminders from Firestore
     const remindersRef = collection(db, "Reminders", user.uid, "UserReminders");
-
     const remindersSnap = await getDocs(remindersRef);
-    console.log("USER UID:", user.uid);
-
-    console.log("REMINDERS PATH:", remindersRef.path);
-
-    console.log("NUMBER OF REMINDERS:", remindersSnap.size);
 
     console.log(
       "REMINDER DATA:",
@@ -66,6 +61,7 @@ const displayReminders = async (user) => {
 
       newcard.querySelector(".read-more").href =
         `createReminder.html?docID=${encodeURIComponent(doc.id)}`;
+      newcard.querySelector(".delete-reminder").dataset.id = doc.id;
 
       setupCheckbox(newcard, doc.id);
 
@@ -90,6 +86,7 @@ const displayReminders = async (user) => {
 
       newcard.querySelector(".read-more").href =
         `createReminder.html?docID=${encodeURIComponent(doc.id)}`;
+      newcard.querySelector(".delete-reminder").dataset.id = doc.id;
 
       setupCheckbox(newcard, doc.id);
 
@@ -115,14 +112,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// ------------------------------------------------------------
-// setupHeart(card, hikeID)
-// Gets ONE card's heart ready:
-//   - on page load: fills the heart if this hike is already a favourite
-//   - connects the click to toggleFavourite()
-// card   = the card we just built from the template
-// hikeID = this hike's document ID (doc.id)
-// ------------------------------------------------------------
 function setupCheckbox(card, reminderId) {
   const checkbox = card.querySelector(".check-btn");
 
@@ -142,19 +131,12 @@ function setupCheckbox(card, reminderId) {
   });
 }
 
-// ------------------------------------------------------------
-// toggleFavourite(heart, hikeID)
-// Runs on every click: adds or removes the hike from favourites
-// heart  = the heart icon that was clicked
-// hikeID = which hike it belongs to
-// ------------------------------------------------------------
 async function toggleCheckbox(checkbox, reminderId) {
   const container = document.getElementById("reminders-go-here");
   const completedContainer = document.getElementById("completed-reminders");
   const userRef = doc(db, "Reminders", currentUser.uid);
 
   const reminderCard = checkbox.closest(".col-12");
-
 
   if (checkbox.classList.contains("bi-check-square")) {
     // Remove from completed reminders
@@ -177,3 +159,50 @@ async function toggleCheckbox(checkbox, reminderId) {
     completedContainer.appendChild(reminderCard);
   }
 }
+
+const deleteReminder = async () => {
+  ["reminders-go-here", "completed-reminders"].forEach((id) => {
+    const container = document.getElementById(id);
+
+    if (!container) return;
+
+    container.addEventListener("click", async (e) => {
+      const deleteId = e.target.closest(".delete-reminder");
+      if (!deleteId) {
+        return;
+      }
+      e.preventDefault();
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        const currentReminderId = deleteId.dataset.id;
+        
+        const userRef = doc(db, "Reminders", currentUser.uid);
+        const currentReminder = doc(
+          db,
+          "Reminders",
+          user.uid,
+          "UserReminders",
+          currentReminderId,
+        );
+
+        await deleteDoc(currentReminder);
+
+        await setDoc(
+          userRef,
+          { checked: arrayRemove(currentReminderId) },
+          { merge: true },
+        );
+        checked.splice(checked.indexOf(currentReminderId), 1);
+
+        deleteId.closest(".col-12").remove();
+      } catch (error) {
+        showError(authErrorMessage(error));
+        console.error(error);
+      }
+    });
+  });
+};
+
+deleteReminder();
