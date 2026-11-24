@@ -4,6 +4,7 @@ import { onAuthReady } from "./authentication.js";
 import {
     collection,
     doc,
+    deleteDoc,
     getDocs,
     updateDoc
 } from "firebase/firestore";
@@ -26,6 +27,7 @@ onAuthReady(async function (user) {
 async function loadGoals(user) {
 
     const goalsList = document.getElementById("goals-list");
+    const completedGoalsList = document.getElementById("completed-goals-list");
 
     try {
 
@@ -38,17 +40,8 @@ async function loadGoals(user) {
 
         const snapshot = await getDocs(goalsCollection);
 
-        // Check if the user has any goals
-        if (snapshot.empty) {
-
-            goalsList.textContent = "You haven't created any goals yet.";
-
-            return;
-
-        }
-
-        // Clear the loading message
         goalsList.replaceChildren();
+        completedGoalsList.replaceChildren();
 
         // Display each goal
         snapshot.forEach(function (goalDoc) {
@@ -57,7 +50,7 @@ async function loadGoals(user) {
 
             // Create a Bootstrap column
             const column = document.createElement("div");
-            column.className = "col-md-6 col-lg-4";
+            column.className = "col-md-6 col-lg-4 goal-card";
 
             // Create a Bootstrap card
             const card = document.createElement("div");
@@ -69,10 +62,40 @@ async function loadGoals(user) {
             const titleRow = document.createElement("div");
             titleRow.className = "d-flex justify-content-between align-items-start";
 
+            const titleActions = document.createElement("div");
+            titleActions.className = "d-flex align-items-start gap-2";
+
             // Goal title
             const title = document.createElement("h5");
             title.className = "card-title";
             title.textContent = goal.title;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "btn btn-sm btn-outline-danger";
+            deleteButton.textContent = "Delete";
+            deleteButton.setAttribute("aria-label", `Delete ${goal.title}`);
+
+            deleteButton.addEventListener("click", async function () {
+                if (!confirm(`Are you sure you want to delete "${goal.title}"?`)) {
+                    return;
+                }
+
+                deleteButton.disabled = true;
+
+                try {
+                    await deleteDoc(
+                        doc(db, "users", user.uid, "goals", goalDoc.id)
+                    );
+                    column.remove();
+                    setEmptyStateIfNeeded(goalsList, "You haven't created any goals yet.");
+                    setEmptyStateIfNeeded(completedGoalsList, "No completed goals yet.");
+                } catch (error) {
+                    console.error("Error deleting goal:", error);
+                    alert("Could not delete your goal.");
+                    deleteButton.disabled = false;
+                }
+            });
 
 
             // Adds check label 
@@ -99,6 +122,15 @@ async function loadGoals(user) {
                         doc(db, "users", user.uid, "goals", goalDoc.id),
                         { completed: isCompleted }
                     );
+
+                    const sourceList = isCompleted ? goalsList : completedGoalsList;
+                    const destinationList = isCompleted ? completedGoalsList : goalsList;
+                    destinationList.querySelector(".goal-empty-state")?.remove();
+                    destinationList.appendChild(column);
+                    setEmptyStateIfNeeded(
+                        sourceList,
+                        isCompleted ? "You haven't created any goals yet." : "No completed goals yet."
+                    );
                 } catch (error) {
                     console.error("Error updating goal completion:", error);
                     completedCheckbox.checked = !isCompleted;
@@ -110,7 +142,9 @@ async function loadGoals(user) {
 
             completedLabel.appendChild(completedCheckbox);
             titleRow.appendChild(title);
-            titleRow.appendChild(completedLabel);
+            titleActions.appendChild(completedLabel);
+            titleActions.appendChild(deleteButton);
+            titleRow.appendChild(titleActions);
 
             // Goal description
             const description = document.createElement("p");
@@ -124,15 +158,30 @@ async function loadGoals(user) {
             card.appendChild(cardBody);
             column.appendChild(card);
 
-            goalsList.appendChild(column);
+            (goal.completed === true ? completedGoalsList : goalsList).appendChild(column);
 
         });
+
+        setEmptyStateIfNeeded(goalsList, "You haven't created any goals yet.");
+        setEmptyStateIfNeeded(completedGoalsList, "No completed goals yet.");
 
     } catch (error) {
 
         console.error("Error loading goals:", error);
         goalsList.textContent = "Could not load your goals.";
+        completedGoalsList.textContent = "Could not load your goals.";
 
+    }
+
+    function setEmptyStateIfNeeded(list, message) {
+        if (list.querySelector(".goal-card")) {
+            return;
+        }
+
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "col-12 goal-empty-state";
+        emptyMessage.textContent = message;
+        list.replaceChildren(emptyMessage);
     }
 
 }

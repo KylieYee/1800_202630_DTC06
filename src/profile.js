@@ -1,149 +1,119 @@
+import { updateProfile } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { onAuthReady } from "./authentication.js";
+import { db } from "./firebaseConfig.js";
 
-import { auth, db } from "./firebaseConfig.js";
+const profileForm = document.getElementById("profile-form");
+const welcomeName = document.getElementById("profile-welcome-name");
+const nameInput = document.getElementById("profile-name");
+const ageInput = document.getElementById("profile-age");
+const heightInput = document.getElementById("profile-height");
+const weightInput = document.getElementById("profile-weight");
+const editButton = document.getElementById("profile-edit");
+const saveButton = document.getElementById("profile-save");
+const message = document.getElementById("profile-message");
+const profileInputs = [nameInput, ageInput, heightInput, weightInput];
 
-import {
-    onAuthStateChanged,
-    signOut
-} from "firebase/auth";
+let currentUser = null;
 
-import {
-    doc,
-    getDoc,
-    setDoc,
-    serverTimestamp
-} from "firebase/firestore";
-
-
-// Get the profile input fields
-const inputs = document.querySelectorAll(".form-control");
-
-const fullNameInput = inputs[0];
-const ageInput = inputs[1];
-const heightInput = inputs[2];
-
-// Get the logout button
-const logoutButton = document.querySelector(".btn-danger");
-
-
-// Create a Save Profile button
-const saveButton = document.createElement("button");
-
-saveButton.type = "button";
-saveButton.className = "btn btn-primary mb-3";
-saveButton.textContent = "Save Profile";
-
-// Add Save button before Logout button
-logoutButton.parentElement.insertBefore(
-    saveButton,
-    logoutButton
-);
-
-
-// Check if a user is logged in
-onAuthStateChanged(auth, async (user) => {
-
-    if (user) {
-
-        // Reference the user's document in Firestore
-        const userRef = doc(db, "users", user.uid);
-
-        try {
-
-            // READ: Get the user's profile from Firestore
-            const documentSnapshot = await getDoc(userRef);
-
-            if (documentSnapshot.exists()) {
-
-                const profileData = documentSnapshot.data();
-
-                // Display saved profile information
-                fullNameInput.value = profileData.fullName || "";
-                ageInput.value = profileData.age || "";
-                heightInput.value = profileData.height || "";
-
-            } else {
-
-                // No profile exists yet
-                fullNameInput.value = user.email || "";
-
-            }
-
-        } catch (error) {
-
-            console.error("Error reading profile:", error);
-            alert("Could not load your profile.");
-
-        }
-
-    } else {
-
-        // No authenticated user
-        fullNameInput.value = "";
-        ageInput.value = "";
-        heightInput.value = "";
-
-        saveButton.disabled = true;
-        logoutButton.disabled = true;
-
-    }
-
-});
-
-
-// Save profile information
-saveButton.addEventListener("click", async () => {
-
-    const user = auth.currentUser;
-
+onAuthReady(async function (user) {
     if (!user) {
-        alert("Please log in first.");
+        location.href = "login.html";
         return;
     }
 
-    // Collect information from the inputs
-    const profileData = {
-        fullName: fullNameInput.value.trim(),
-        age: ageInput.value.trim(),
-        height: heightInput.value.trim(),
-        email: user.email,
-        updatedAt: serverTimestamp()
+    currentUser = user;
+    welcomeName.textContent = user.displayName || user.email || "there";
+
+    try {
+        const profileSnapshot = await getDoc(doc(db, "users", user.uid));
+        const profile = profileSnapshot.exists() ? profileSnapshot.data() : {};
+        const name = typeof profile.name === "string" && profile.name.trim()
+            ? profile.name
+            : user.displayName || "";
+
+        nameInput.value = name;
+        ageInput.value = profile.age ?? "";
+        heightInput.value = profile.height ?? "";
+        weightInput.value = profile.weight ?? "";
+        welcomeName.textContent = name || user.email || "there";
+        editButton.disabled = false;
+    } catch (error) {
+        console.error("Error loading profile:", error);
+        showMessage("Could not load your profile. Please try again.", "text-danger");
+    }
+});
+
+editButton.addEventListener("click", function () {
+    profileInputs.forEach(function (input) {
+        input.readOnly = false;
+    });
+    editButton.disabled = true;
+    saveButton.disabled = false;
+    message.textContent = "";
+    nameInput.focus();
+});
+
+profileForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (!currentUser || !profileForm.reportValidity()) {
+        return;
+    }
+
+    const name = nameInput.value.trim();
+    if (!name) {
+        showMessage("Please enter your full name.", "text-danger");
+        nameInput.focus();
+        return;
+    }
+
+    const profile = {
+        name,
+        age: ageInput.value === "" ? null : Number(ageInput.value),
+        height: heightInput.value === "" ? null : Number(heightInput.value),
+        weight: weightInput.value === "" ? null : Number(weightInput.value)
     };
 
+    editButton.disabled = true;
+    saveButton.disabled = true;
+    showMessage("Saving your profile...", "text-muted");
+
     try {
-
-        // WRITE: Save profile information to Firestore
-        const userRef = doc(db, "users", user.uid);
-
-        await setDoc(userRef, profileData, {
-            merge: true
-        });
-
-        alert("Profile saved successfully!");
-
+        await setDoc(doc(db, "users", currentUser.uid), profile, { merge: true });
     } catch (error) {
-
         console.error("Error saving profile:", error);
-        alert("Could not save your profile.");
-
+        showMessage("Could not save your profile. Please try again.", "text-danger");
+        editButton.disabled = false;
+        saveButton.disabled = false;
+        return;
     }
-
-});
-
-
-// Log out the current user
-logoutButton.addEventListener("click", async () => {
 
     try {
-
-        await signOut(auth);
-
-        window.location.href = "index.html";
-
+        await updateProfile(currentUser, { displayName: name });
+        welcomeName.textContent = name;
+        setEditing(false);
+        showMessage("Profile saved.", "text-success");
     } catch (error) {
-
-        console.error("Error logging out:", error);
-        alert("Could not log out.");
-
+        console.error("Error updating login profile name:", error);
+        welcomeName.textContent = name;
+        setEditing(false);
+        showMessage(
+            "Profile details were saved, but the login profile name could not be updated.",
+            "text-warning"
+        );
     }
-
 });
+
+function setEditing(isEditing) {
+    profileInputs.forEach(function (input) {
+        input.readOnly = !isEditing;
+    });
+    editButton.disabled = isEditing;
+    saveButton.disabled = !isEditing;
+}
+
+function showMessage(text, className) {
+    message.textContent = text;
+    message.className = `mt-3 mb-0 ${className}`;
+}
