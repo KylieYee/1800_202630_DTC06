@@ -26,7 +26,7 @@
             <div class="container-fluid">
     
                 <!-- Moon logo -->
-                <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <a class="navbar-brand d-flex align-items-center" href="main.html">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTZZrRqTCtuxp8DE4qTXfGporgJrpz1On3Dmg-eOlG7w&s=10"
                         alt="Moon logo" class="rounded-circle border border-2 border-white"
                         style="width: 48px; height: 48px; object-fit: cover;">
@@ -54,46 +54,111 @@
     <!-- Navigation bar end -->
     </header>
 
-    <main>
+    <main class="container py-4">
         <div id="profile-container">
-            <h1 class="p-5">Welcome User</h1>
-            <div class="d-flex flex-row align-items-center">
-                <img src="images/blank-profile-picture-973460_1280.png" class=" rounded-circle w-25 p-5">
-                
-                <div class="d-flex flex-column  ">
+            <h1 class="mb-4">Welcome, <span id="profile-welcome-name">there</span></h1>
+            <div class="d-flex flex-column flex-md-row align-items-center gap-4">
+                <img src="images/blank-profile-picture-973460_1280.png"
+                    class="rounded-circle img-fluid" style="max-width: 220px;"
+                    alt="Default profile picture">
+
+                <form id="profile-form" class="w-100" style="max-width: 520px;">
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default"> Full Name </span>
-                        <input type="text" class="form-control" aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default">
+                        <label class="input-group-text" for="profile-name">Full Name</label>
+                        <input id="profile-name" type="text" class="form-control" autocomplete="name"
+                            required readonly>
                     </div>
 
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Age</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default">
+                        <label class="input-group-text" for="profile-age">Age</label>
+                        <input id="profile-age" type="number" min="0" step="1" class="form-control"
+                            readonly>
                     </div>
 
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Height</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default">
+                        <label class="input-group-text" for="profile-height">Height (CM)</label>
+                        <input id="profile-height" type="number" min="0" step="any" class="form-control"
+                            readonly>
                     </div>
 
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Height</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default">
+                        <label class="input-group-text" for="profile-weight">Weight (KG)</label>
+                        <input id="profile-weight" type="number" min="0" step="any" class="form-control"
+                            readonly>
                     </div>
 
-                    <button type="button" class="btn btn-danger">Log Out </button>
- 
-                </div>
+                    <div class="d-flex gap-2">
+                        <button id="profile-edit" type="button" class="btn btn-danger" disabled>Edit</button>
+                        <button id="profile-save" type="submit" class="btn btn-success" disabled>Save</button>
+                    </div>
+                    <p id="profile-message" class="mt-3 mb-0" role="status" aria-live="polite"></p>
+                </form>
             </div>
-            
-
         </div>
-
-
     </main>
+
+    <div class="position-fixed bottom-0 start-0 w-100">
+        <!-- Navigation bar start -->
+        <header class="" style="background-color: grey;">
+            <nav class="navbar navbar-expand-md">
+                <div class="container-fluid align-items-center">
+    
+                    <!-- Moon logo -->
+                    <a class="navbar-brand d-flex align-items-center" href="main.html">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTZZrRqTCtuxp8DE4qTXfGporgJrpz1On3Dmg-eOlG7w&s=10"
+                            alt="Moon logo" class="rounded-circle border border-2 border-white"
+                            style="width: 48px; height: 48px; object-fit: cover;">
+                    </a>
+    
+                    <!-- Mobile menu button -->
+    
+                    <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+    
+                    <!-- Navigation links -->
+                    <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
+                        <div class="navbar-nav align-items-center ">
+    
+    
+                            <a href="main.html" class="nav-link px-3 ">
+                                <img src="images/images.png" alt="home button"
+                                    class="rounded-circle border border-2 border-white"
+                                    style="width: 48px; height: 48px; object-fit: cover;">
+                            </a>
+    
+                            <a href="newEvent.html" class="nav-link px-3 ">
+                                <img src="images/images-2.png" alt="home button"
+                                    class="rounded-circle border border-2 border-white"
+                                    style="width: 48px; height: 48px; object-fit: cover;">
+                            </a>
+    
+                            <a href="tracker.html" class="nav-link px-3 ">
+                                <img src="images/images-3.png" alt="home button"
+                                    class="rounded-circle border border-2 border-white"
+                                    style="width: 48px; height: 48px; object-fit: cover;">
+                            </a>
+    
+                            <a href="reminder.html" class="nav-link px-3">
+                                <img src="images/images-4.png" alt="home button"
+                                    class="rounded-circle border border-2 border-white"
+                                    style="width: 48px; height: 48px; object-fit: cover;">
+                            </a>
+    
+                            <a href="profile.html" class="nav-link px-3 ">
+                                <img src="images/images-5.png" alt="home button"
+                                    class="rounded-circle border border-2 border-white"
+                                    style="width: 48px; height: 48px; object-fit: cover;">
+                            </a>
+                        </div>
+                    </div>
+    
+                </div>
+            </nav>
+        </header>
+    </div>
+    <script type="module" src="/src/profile.js"></script>
 </body>
 </html>
