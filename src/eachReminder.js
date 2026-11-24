@@ -36,7 +36,7 @@ async function displayReminder(user) {
   } catch (error) {
     console.error("Error loading reminder:", error);
     document.getElementById("reminderTitle").textContent =
-      "Error loading hike.";
+      "Error loading reminder.";
   }
 }
 
